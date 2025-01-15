@@ -3,16 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Weather and Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
+    <div class="container">
         <h1>Weather Information</h1>
-        <input type="text" id="city" placeholder="Enter city name">
-        <button id="getWeather">Get Weather</button>
-        <div id="weatherResult"></div>
+        
+        <form id="weatherForm">
+            <input type="text" id="city" placeholder="Enter city name" required>
+            <button type="submit">Get Weather</button>
+        </form>
+        
+        <div id="weatherResult" style="display: none;">
+            <p id="cityName"></p>
+            <p id="temperature"></p>
+            <p id="description"></p>
+            <p id="feelsLike"></p>
+            <p id="humidity"></p>
+            <p id="pressure"></p>
+            <p id="windSpeed"></p>
+            <p id="countryCode"></p>
+            <p id="rainVolume"></p>
+        </div>
+
+        <div id="map" style="height: 400px; width: 100%;"></div>
     </div>
-    <script src="js/main.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="index.js"></script>
 </body>
 </html>
