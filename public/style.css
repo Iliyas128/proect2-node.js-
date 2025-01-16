@@ -55,3 +55,15 @@ button:hover {
     font-size: 18px;
     margin: 5px 0;
 }
+#weatherResult {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+#map {
+    height: 300px;
+    margin-top: 20px;
+}

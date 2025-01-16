@@ -3,34 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather and Map</title>
+    <title>Weather and News App</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Weather Information</h1>
-        
-        <form id="weatherForm">
-            <input type="text" id="city" placeholder="Enter city name" required>
-            <button type="submit">Get Weather</button>
-        </form>
-        
-        <div id="weatherResult" style="display: none;">
-            <p id="cityName"></p>
-            <p id="temperature"></p>
-            <p id="description"></p>
-            <p id="feelsLike"></p>
-            <p id="humidity"></p>
-            <p id="pressure"></p>
-            <p id="windSpeed"></p>
-            <p id="countryCode"></p>
-            <p id="rainVolume"></p>
-        </div>
+    <h1>Weather and News App</h1>
+    <form id="weatherForm">
+        <input type="text" id="city" placeholder="Enter city name" required />
+        <button type="submit">Get Weather</button>
+    </form>
 
-        <div id="map" style="height: 400px; width: 100%;"></div>
+    <div id="weatherResult">
+        <h2 id="cityName"></h2>
+        <p id="temperature"></p>
+        <p id="description"></p>
+        <p id="feelsLike"></p>
+        <p id="humidity"></p>
+        <p id="pressure"></p>
+        <p id="windSpeed"></p>
+        <p id="countryCode"></p>
+        <p id="rainVolume"></p>
+        <p id="localTime"></p>
+        <p id="timeZone"></p>
+
+        <h3>Top News</h3>
+        <ul id="newsList"></ul>
+        
+        <div id="map"></div>
     </div>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="index.js"></script>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+    let map;
+
+        document.getElementById('weatherForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const city = document.getElementById('city').value;
+            const response = await fetch(`/weather?city=${city}`);
+            const data = await response.json();
+
+            console.log(data);
+
+            if (data.city) {
+                document.getElementById('weatherResult').style.display = 'block';
+                document.getElementById('cityName').textContent = `City: ${data.city}`;
+                document.getElementById('temperature').textContent = `Temperature: ${data.temperature}°C`;
+                document.getElementById('description').textContent = `Description: ${data.description}`;
+                document.getElementById('feelsLike').textContent = `Feels Like: ${data.feelsLike}°C`;
+                document.getElementById('humidity').textContent = `Humidity: ${data.humidity}%`;
+                document.getElementById('pressure').textContent = `Pressure: ${data.pressure} hPa`;
+                document.getElementById('windSpeed').textContent = `Wind Speed: ${data.windSpeed} m/s`;
+                document.getElementById('countryCode').textContent = `Country: ${data.countryCode}`;
+                document.getElementById('rainVolume').textContent = `Rain Volume (last 3h): ${data.rainVolume} mm`;
+
+                document.getElementById('localTime').textContent = `Local Time: ${data.localTime}`;
+                document.getElementById('timeZone').textContent = `Time Zone: ${data.timeZone}`;
+
+                const newsList = document.getElementById('newsList');
+                newsList.innerHTML = '';
+
+                if (data.news && data.news.length > 0) {
+                data.news.forEach(article => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = article.title;
+                    newsList.appendChild(listItem);
+                });} else {
+    newsList.innerHTML = '<li>No news available for this country.</li>';
+}
+        
+                if(map){map.remove();}
+                map = L.map('map').setView([data.lat, data.lon], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+                
+                L.marker([data.lat, data.lon]).addTo(map)
+                    .bindPopup(`<b>${data.city}</b><br>${data.temperature}°C`)
+                    .openPopup();
+            } else {
+                alert('City not found!');
+            }
+        });
+    </script>
 </body>
 </html>
